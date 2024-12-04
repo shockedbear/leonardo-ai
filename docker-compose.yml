@@ -1,0 +1,39 @@
+services:
+
+  db:
+    image: postgres:17.2
+    restart: always
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: johndoe
+      POSTGRES_PASSWORD: randompassword
+
+  builder:
+    build:
+      context: .
+    user: "1000:1000"
+    ports:
+      - "5555:5555"
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    entrypoint: /bin/sh
+    command: -c "tail -f /dev/null"
+
+  app:
+    build:
+      context: .
+    user: "1000:1000"
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - '3000:3000'
+    entrypoint: 'npm'
+    command: 'run start:dev'
