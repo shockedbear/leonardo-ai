@@ -2,6 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { ScheduleEntity } from './entities/schedule.entity';
+import { Schedule } from '@prisma/client';
 
 @Controller({
   path: 'schedules',
@@ -11,27 +14,33 @@ export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
-  create(@Body() createScheduleDto: CreateScheduleDto) {
-    return this.schedulesService.create(createScheduleDto);
+  @ApiCreatedResponse({ type: ScheduleEntity })
+  async create(@Body() createScheduleDto: CreateScheduleDto) {
+    return new ScheduleEntity(await this.schedulesService.create(createScheduleDto) as Schedule);
   }
 
   @Get()
-  findAll() {
-    return this.schedulesService.findAll();
+  @ApiOkResponse({ type: ScheduleEntity, isArray: true })
+  async findAll() {
+    return (await this.schedulesService.findAll())
+      .map(schedule => new ScheduleEntity(schedule));
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.schedulesService.findOne(id);
+  @ApiOkResponse({ type: ScheduleEntity })
+  async findOne(@Param('id') id: string) {
+    return new ScheduleEntity(await this.schedulesService.findOne(id) as Schedule);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
-    return this.schedulesService.update(id, updateScheduleDto);
+  @ApiCreatedResponse({ type: ScheduleEntity })
+  async update(@Param('id') id: string, @Body() updateScheduleDto: UpdateScheduleDto) {
+    return new ScheduleEntity(await this.schedulesService.update(id, updateScheduleDto) as Schedule);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.schedulesService.remove(id);
+  @ApiCreatedResponse({ type: ScheduleEntity })
+  async remove(@Param('id') id: string) {
+    return new ScheduleEntity(await this.schedulesService.remove(id) as Schedule);
   }
 }
