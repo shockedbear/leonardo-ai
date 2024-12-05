@@ -13,16 +13,14 @@ export class TaskEntity implements Task {
   account_id: number;
 
   @ApiProperty()
-  schedule_id: number;
+  schedule_id: string;
 
   @ApiProperty()
-  start_Time: Date;
+  start_time: Date;
 
   @ApiProperty()
   duration: number;
 
-  @ApiProperty({
-    examples: TaskEnum,
-  })
-  type: string;
+  @ApiProperty()
+  type: TaskEnum;
 }
