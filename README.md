@@ -1,4 +1,8 @@
 # Leonardo.ai test task
+0. Pull the project:
+   ```bash
+   git clone git@github.com:shockedbear/leonardo-ai.git
+   ```
 1. Copy `.env.dist` to `.env`
 2. Run the following command to build a project
     ```bash
